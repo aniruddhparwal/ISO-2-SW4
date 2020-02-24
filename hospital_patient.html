@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First</title>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">D-CARE</a>
+                <div class="float-right">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About Us</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="#">Hospital login</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Patient login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">xyz login</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+    </header>
+    <div class="container">
+        <div class="form-group mx-sm-3 mb-2">
+            <label>Name</label>
+            <input type="text" class="form-control" id="nameID">
+            <br>
+            <!-- <button id="setID" class="btn btn-primary mb-2">Confirm identity</button> -->
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label>secret Key</label>
+            <input type="text" class="form-control" id="uniqueID" value="0xfC46293FCDB888F83c876C1799f133b981e0Bf48">
+            <br>
+            <button id="conID" class="btn btn-primary mb-2">Confirm identity</button>
+        </div>
+        <br>
+
+
+        <!-- <input type="text" id="amount"> -->
+        <p id='balance'></p>
+        <button id="deposit">Deposit</button>
+        <button id="nameID">Name</button>
+        <br>
+        <img src="loader.gif" alt="" srcset="" id="loader" style="visibility: hidden; display: none;">
+    </div>
+
+    <div class="container" id="info" style="display: none;">
+        Name:- <span id="name">Aniruddh Parwal</span><br>
+        Age:- <span id="age">Aniruddh Parwal</span><br>
+        Gender:- <span id="gender">Aniruddh Parwal</span><br>
+        City:- <span id="city">Aniruddh Parwal</span><br>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
+    <script>
+        var contract;
+        var global_abi = null;
+        var global_address = null;
+        $(document).ready(function () {
+            $('#conID').click(function () {
+                document.getElementById("loader").style.display = "inline";
+                var address = $('#uniqueID').val();
+                global_address = address;
+                console.log(address);
+
+                web3 = new Web3(web3.currentProvider);
+                // var address = "0x4099c7d3B7cb1733908568Ea97ABD5f34F1eEed3";
+                var abi = [{
+                        "inputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "constructor"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "getName",
+                        "outputs": [{
+                            "name": "",
+                            "type": "string"
+                        }],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "getSec",
+                        "outputs": [{
+                            "name": "",
+                            "type": "int256"
+                        }],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "getUnique",
+                        "outputs": [{
+                            "name": "",
+                            "type": "int256"
+                        }],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    }
+                ];
+                global_abi = abi;
+                contract = new web3.eth.Contract(abi, address);
+
+                contract.methods.getUnique().call().then(function (bal) {
+                    $('#balance').html(bal);
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("loader").style.visibility = "visible";
+                    contract.methods.getSec().call().then(function (seckey) {
+                        secretKey = seckey;
+                        console.log(secretKey + " ani")
+                    })
+
+                })
+            })
+        })
+
+        var setname = null;
+        var secretKey = null;
+
+        $('#nameID').click(function () {
+            document.getElementById("loader").style.visibility = "visible";
+            contract.methods.getName().call().then(function (setname) {
+                $('#balance').html(setname);
+                document.getElementById("loader").style.display = "none";
+
+            })
+        })
+        $('#deposit').click(function () {
+            document.getElementById("loader").style.visibility = "visible";
+            contract.methods.getSec().call().then(function (setname) {
+                $('#balance').html(setname);
+                document.getElementById("loader").style.visibility = "hidden";
+
+            })
+        })
+
+        function matchDetails(seckey_user,seckey_db) {
+
+            if(seckey_user == seckey_db)
+            return 1;
+            
+        }
+
+    </script>
+
+
+</body>
+
+</html>
